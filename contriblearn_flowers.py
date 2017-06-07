@@ -70,18 +70,19 @@ print("\nTest Accuracy: {0:f}\n".format(accuracy))
 
 predictions = list(classifier.predict(input_fn=new_samples))
 
-print(
-    "New Samples, Class Predictions:    {}\n".format(predictions))
+#print(
+    #"New Samples, Class Predictions:    {}\n".format(predictions))
+
+for p in predictions:
+    ind = predictions.index(p)
+    if p == 0:
+        print("Flower " + str(ind) + " is Iris setosa.")
+    elif p == 1:
+        print("Flower " + str(ind) + " is Iris versicolor.")
+    else:
+        print("Flower " + str(ind) + " is Iris virginica.")
 
 if __name__ == "__main__":
     main()
 
-#for p in predictions:
-    #ind = predictions.index(p)
-    #if p == 0:
-        #print("Flower " + str(ind) + " is Iris setosa.")
-    #elif p == 1:
-        #print("Flower " + str(ind) + " is Iris versicolor.")
-    #else:
-        #print("Flower " + str(ind) + " is Iris virginica.")
 
