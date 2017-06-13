@@ -1,3 +1,5 @@
+#Note: this ML algorithm has 20,000 learning cycles. Recomend evaluating on a computer with GPU.
+
 from __future__ import absolute_import, division, print_function
 
 import numpy as np
@@ -70,3 +72,33 @@ def cnn_model_fn(features, labels, mode):
     #Return a ModelFnOps object
     return mfn.ModelFnOps(mode=mode, predictions=predictions, loss=loss, 
                           train_op=train_op)
+
+def main(unused_argv):
+    #Load Test and Evaluation Data
+    mnist = learn.datasets.load_dataset("mnist")
+    train_data = mnist.train.images #this is a numpy array
+    train_labels = np.asarray(mnist.train.lables, dtype=np.int32)
+    eval_data = mnist.test.images #this in a numpy array
+    eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
+
+    #Create the Estimator
+    mnist_classifier = learn.Estimator(model_fn=cnn_model_fn, 
+                                       model_dir="/tmp/mnist_convnet_mode1")
+
+    #Set up prediction logging
+    log_tensors = {"probabilities": "softmax_tensor"}
+    logging_hook = tf.train.LoggingTensorHook(tensors=log_tensors, 
+                                              every_n_iter=50)
+
+    #Model Training
+    mnist_classifier.fit(x=train_data, y=train_labels, batch_size=100, 
+                         steps=20000, monitors=[logging_hook])
+
+    #Configure the accuracy metric for evaluation
+    metrics = {"accuracy": learn.MetricSpec(metric_fn=tf.metrics.accuracy, 
+               prediction_key="classes"),}
+
+    #Evaluate and print the results
+    eval_results = mnist_classifier.evaluate(x=eval_data, y=eval_labels, 
+                                             metrics=metrics)
+    print(eval_results)
