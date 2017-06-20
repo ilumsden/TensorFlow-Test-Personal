@@ -77,7 +77,7 @@ def main(unused_argv):
     #Load Test and Evaluation Data
     mnist = learn.datasets.load_dataset("mnist")
     train_data = mnist.train.images #this is a numpy array
-    train_labels = np.asarray(mnist.train.lables, dtype=np.int32)
+    train_labels = np.asarray(mnist.train.labels, dtype=np.int32)
     eval_data = mnist.test.images #this in a numpy array
     eval_labels = np.asarray(mnist.test.labels, dtype=np.int32)
 
@@ -102,3 +102,6 @@ def main(unused_argv):
     eval_results = mnist_classifier.evaluate(x=eval_data, y=eval_labels, 
                                              metrics=metrics)
     print(eval_results)
+
+if __name__ == "__main__":
+    tf.app.run()
